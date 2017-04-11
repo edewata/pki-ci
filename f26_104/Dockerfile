@@ -25,6 +25,7 @@ RUN dnf builddep -y pki-core \
 # enable COPR with Dogtag 10.4 dependencies
 RUN dnf copr -y enable @pki/10.4 \
     && dnf update -y \
+    && dnf install -y slf4j python2-cryptography python3-cryptography \
     && dnf clean all
 
 # build env

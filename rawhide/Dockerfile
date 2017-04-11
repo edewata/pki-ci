@@ -20,6 +20,7 @@ RUN dnf install -y \
 
 # build dependencies
 RUN dnf builddep -y pki-core \
+    && dnf install -y slf4j python2-cryptography python3-cryptography \
     && dnf clean all
 
 # build env
