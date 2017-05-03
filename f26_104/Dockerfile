@@ -38,6 +38,7 @@ ENV BUILDDIR="/tmp/workdir" \
     BUILDUSER_UID=1000 \
     BUILDUSER_GID=1000
 VOLUME ["${BUILDDIR}"]
+EXPOSE 389 8080 8443
 
 # https://raw.githubusercontent.com/fedora-cloud/Fedora-Dockerfiles/master/systemd/systemd/Dockerfile
 ENV container docker

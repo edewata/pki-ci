@@ -1,6 +1,6 @@
 FROM registry.fedoraproject.org/fedora:25
 LABEL \
-    name="dogtagpki/pki-ci-containers:f26_104" \
+    name="dogtagpki/pki-ci-containers:f25_104" \
     maintainer="Christian Heimes <cheimes@redhat.com>" \
     vendor="Dogtag PKI" \
     url="http://dogtagpki.org/"
@@ -35,6 +35,7 @@ ENV BUILDDIR="/tmp/workdir" \
     BUILDUSER_UID=1000 \
     BUILDUSER_GID=1000
 VOLUME ["${BUILDDIR}"]
+EXPOSE 389 8080 8443
 
 # https://raw.githubusercontent.com/fedora-cloud/Fedora-Dockerfiles/master/systemd/systemd/Dockerfile
 ENV container docker
