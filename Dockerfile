@@ -16,4 +16,4 @@ RUN dnf update -y --best --allowerasing && dnf clean all \
 
 STOPSIGNAL RTMIN+3 
 VOLUME ["/freeipa", "/run", "/tmp"]
-ENTRYPOINT [ "/usr/sbin/init" ]
+ENTRYPOINT [ "/usr/sbin/init" ] 
