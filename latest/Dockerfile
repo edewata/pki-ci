@@ -1,5 +1,5 @@
 FROM fedora:latest
-MAINTAINER [Dinesh Prasanth dmolugu@ncsu.edu]
+MAINTAINER [Dinesh Prasanth dmoluguw@redhat.com]
 ENV container=docker LANG=en_US.utf8 LANGUAGE=en_US.utf8 LC_ALL=en_US.utf8
 
 RUN echo 'deltarpm = false' >> /etc/dnf/dnf.conf \ 
