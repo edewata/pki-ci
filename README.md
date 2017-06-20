@@ -1,5 +1,5 @@
 # dogtag-freeipa-ci-containers
-(C) 2008 Red Hat, Inc.
+(C) 2017 Red Hat, Inc.
 All rights reserved.
 
 This project is open-source software.
