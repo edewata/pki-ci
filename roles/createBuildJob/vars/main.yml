@@ -1,0 +1,8 @@
+gerrit_project_url: review.gerrithub.io:29418/dogtagpki/pki
+
+gerrit_user_name: pki-jenkins-bot
+
+jenkins_job_name: Gerrit-Travis-Integration-Job
+jenkins_create_job_dependencies:
+  - python-jenkins
+  - lxml
