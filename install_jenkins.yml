@@ -1,0 +1,9 @@
+---
+- hosts: localhost
+  become: yes
+  roles:
+    # Install java if not available
+    - geerlingguy.java
+
+    # Install and configure Jenkins
+    - installJenkins
