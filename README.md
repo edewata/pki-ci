@@ -21,8 +21,8 @@ To download the java setup playbook run the following ansible-galaxy command:
 
 The following command installs java (if not installed), configures the bot:
 
+    ansible-playbook install_jenkins.yml --extra-vars '{"jenkins_admin_password":"<jenkins-password>" "github_token":"<github-token>"}' -K
     # -K will prompt for the system's root password
-    ansible-playbook install_jenkins.yml --extra-vars '{"jenkins_admin_password":"<password>"}' -K
 
 **Note:** the `extra-vars` can be take values in the `key=value` format or as `JSON` format (as shown above).
 
@@ -33,7 +33,8 @@ The significant default values taken are:
 - *jenkins_http_port*: 8080
 - *jenkins_admin_username*: admin
 - *jenkins_admin_password*: admin
-- *jenkins_plugins*: ["github","ws-cleanup","credentials","gerrit-trigger"]
+- *gerrit_project_name*: dogtagpki/pki
+- *jenkins_plugins*: ["github","ws-cleanup","credentials","gerrit-trigger", "credentials-binding", "postbuild-task ", "plain-credentials"]
 
 **Note:** It is recommended to change the default `admin` password by passing the `jenkins_admin_password` as environment variable (as shown in the script above).
 

@@ -20,5 +20,21 @@
 - name: Copy the Jenkins job xml
   template: src=buildJob.xml.j2 dest=/tmp/{{ jenkins_job_name }}.xml
 
+- name: Copying credentials xml
+  template: src=credentials.xml.j2 dest={{ github_credentials_loc }}.xml
+
+- name: Adding credentials to jenkins for monitoring Travis
+  shell: "cat {{ github_credentials_loc }}.xml | java -jar {{jenkins_jar_location}} -s http://{{ jenkins_hostname }}:{{ jenkins_http_port }}/ create-credentials-by-xml \"SystemCredentialsProvider::SystemContextResolver::jenkins\" \"(global)\" --username {{jenkins_admin_username}} --password {{jenkins_admin_password}}"
+
 - name: Creating Jenkins job
   shell: "java -jar {{ jenkins_jar_location }} -s http://{{ jenkins_hostname }}:{{ jenkins_http_port }}/ create-job {{ jenkins_job_name }} < /tmp/{{ jenkins_job_name }}.xml --username {{jenkins_admin_username}} --password {{jenkins_admin_password}}"
+
+- name: Removing the credentials xml
+  file:
+    path: "{{ github_credentials_loc }}.xml"
+    state: absent
+
+- name: Removing the build job xml
+  file:
+    path: "/tmp/{{ jenkins_job_name }}.xml"
+    state: absent

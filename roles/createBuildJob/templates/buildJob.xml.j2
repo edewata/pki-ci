@@ -8,13 +8,14 @@
     <configVersion>2</configVersion>
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
+        <refspec>refs/changes/*:refs/changes/*</refspec>
         <url>ssh://{{gerrit_user_name}}@{{gerrit_project_url}}</url>
         <credentialsId>a24b4774-facd-47b6-b08a-1ac3b835560c</credentialsId>
       </hudson.plugins.git.UserRemoteConfig>
     </userRemoteConfigs>
     <branches>
       <hudson.plugins.git.BranchSpec>
-        <name>any</name>
+        <name>$GERRIT_REFNAME</name>
       </hudson.plugins.git.BranchSpec>
     </branches>
     <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
@@ -31,7 +32,7 @@
       <gerritProjects>
         <com.sonyericsson.hudson.plugins.gerrit.trigger.hudsontrigger.data.GerritProject>
           <compareType>PLAIN</compareType>
-          <pattern>dogtagpki/pki</pattern>
+          <pattern>{{gerrit_project_name}}</pattern>
           <branches>
             <com.sonyericsson.hudson.plugins.gerrit.trigger.hudsontrigger.data.Branch>
               <compareType>PLAIN</compareType>
@@ -78,13 +79,51 @@
     </com.sonyericsson.hudson.plugins.gerrit.trigger.hudsontrigger.GerritTrigger>
   </triggers>
   <concurrentBuild>false</concurrentBuild>
-  <builders/>
-  <publishers/>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#create a temp branch and push it to official repo
+ssh-keyscan github.com >> $JENKINS_HOME/.ssh/known_hosts
+git remote add bot git@github.com:{{github_repo}}.git
+BRANCH_NAME="bot-"`date +%Y-%m-%d`-$BUILD_NUMBER 
+git checkout -b $BRANCH_NAME
+git push --set-upstream bot $BRANCH_NAME
+python $JENKINS_HOME/scripts/travisStatus.py -t ${{github_token_variable}} -r {{github_repo}} -b $BRANCH_NAME
+</command>
+      <unstableReturn>3</unstableReturn>
+    </hudson.tasks.Shell>
+  </builders>
+
+  <publishers>
+    <hudson.plugins.postbuildtask.PostbuildTask plugin="postbuild-task@1.8">
+      <tasks>
+        <hudson.plugins.postbuildtask.TaskProperties>
+          <logTexts>
+            <hudson.plugins.postbuildtask.LogProperties>
+              <logText></logText>
+              <operator>AND</operator>
+            </hudson.plugins.postbuildtask.LogProperties>
+          </logTexts>
+          <EscalateStatus>false</EscalateStatus>
+          <RunIfJobSuccessful>false</RunIfJobSuccessful>
+          <script>git push -d bot "bot-"`date +%Y-%m-%d`-$BUILD_NUMBER</script>
+        </hudson.plugins.postbuildtask.TaskProperties>
+      </tasks>
+    </hudson.plugins.postbuildtask.PostbuildTask>
+  </publishers>
   <buildWrappers>
     <hudson.plugins.ws__cleanup.PreBuildCleanup plugin="ws-cleanup@0.34">
       <deleteDirs>false</deleteDirs>
       <cleanupParameter></cleanupParameter>
       <externalDelete></externalDelete>
     </hudson.plugins.ws__cleanup.PreBuildCleanup>
+    <org.jenkinsci.plugins.credentialsbinding.impl.SecretBuildWrapper plugin="credentials-binding@1.13">
+      <bindings>
+        <org.jenkinsci.plugins.credentialsbinding.impl.StringBinding>
+          <credentialsId>{{github_token_id}}</credentialsId>
+          <variable>{{github_token_variable}}</variable>
+        </org.jenkinsci.plugins.credentialsbinding.impl.StringBinding>
+      </bindings>
+    </org.jenkinsci.plugins.credentialsbinding.impl.SecretBuildWrapper>
+
   </buildWrappers>
 </project>

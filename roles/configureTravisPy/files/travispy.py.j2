@@ -1,0 +1,90 @@
+from travispy import TravisPy
+import os
+import sys
+import time
+import getopt
+
+def print_help():
+        print('Usage: traviStatus.py [options]')
+        print()
+        print('  -t, --token <gitHub token>    	 GitHub Token.')
+        print('  -r, --repo <repo name>    		 Repository name.')
+        print('  -b, --branch <branch name>      Branch name.')
+        print()
+
+try:
+	opts, args = getopt.gnu_getopt(sys.argv, 't:r:b:', [
+		'token=', 'repo=', 'branch='])
+
+except getopt.GetoptError as e:
+	print('ERROR: ' + str(e))
+	print_help();
+	sys.exit(1)
+
+token = None
+repo = None
+branch = None
+for o, a in opts:
+	if o in ('-t', '--token'):
+		token = a
+
+	elif o in ('-r', '--repo'):
+		repo = a
+
+	elif o in ('-b', '--branch'):
+		branch = a
+
+	else:
+		print('ERROR: unknown option ' + o)
+		print_help()
+		sys.exit(1)
+
+if not token or not repo or not branch:
+	print('ERROR: All parameters are required')
+	print_help()
+	sys.exit(1)
+
+# Load the user info
+t = TravisPy.github_auth(token)
+
+user = t.user()
+print(user.login)
+
+# Select the repo you need
+repo = t.repo(repo)
+
+# Get the branch info based on the previously created throw-away branch
+branch_name = branch
+
+build = None
+print ("Branch name: " + branch_name)
+print("Repo name: " + repo.slug)
+
+# Wait for the lastest build to start
+
+while True:
+	try:
+		if t.branch(branch_name, repo.slug).id:
+			break
+	except:
+		#print('Waiting for the new build to begin...')
+		continue
+
+print('Build Started...')
+
+while True:
+	# Get the branch info to monitor
+	build = t.branch(branch_name, repo.slug)
+	print('Building...')
+	if build.color != build.YELLOW:
+		break
+    
+	# Check every 5 seconds. So, sleep
+	time.sleep(5)
+
+if build.color == build.RED:
+	print('Build Failed!')
+	sys.exit(3)
+elif build.color == build.GREEN:
+	print('Build Successful')
+	sys.exit(0)

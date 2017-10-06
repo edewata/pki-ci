@@ -1,0 +1,17 @@
+- name: Install Travispy
+  pip: "name=travispy state=present"
+
+- name: Create necessary folder
+  file:
+    path: '{{jenkins_home}}/scripts'
+    state: directory
+    owner: jenkins
+    group: jenkins
+    mode: 0775
+    
+- name: Install script to monitor Travis
+  copy:
+    src: travispy.py.j2
+    dest: '{{jenkins_home}}/scripts/travisStatus.py'
+    owner: jenkins
+    group: jenkins
