@@ -1,5 +1,5 @@
 - name: Configure gerrit-trigger plugin
-  copy:
+  template:
     src: gerrit-trigger.xml
     dest: "{{jenkins_home}}"
     owner: "{{jenkins_process_user}}"

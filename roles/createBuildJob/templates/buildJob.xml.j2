@@ -8,14 +8,14 @@
     <configVersion>2</configVersion>
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
-        <refspec>refs/changes/*:refs/changes/*</refspec>
-        <url>ssh://{{gerrit_user_name}}@{{gerrit_project_url}}</url>
+        <refspec>$GERRIT_REFSPEC</refspec>
+        <url>$GERRIT_SCHEME://{{gerrit_user_name}}@$GERRIT_HOST:$GERRIT_PORT/$GERRIT_PROJECT</url>
         <credentialsId>a24b4774-facd-47b6-b08a-1ac3b835560c</credentialsId>
       </hudson.plugins.git.UserRemoteConfig>
     </userRemoteConfigs>
     <branches>
       <hudson.plugins.git.BranchSpec>
-        <name>$GERRIT_REFNAME</name>
+        <name>$GERRIT_BRANCH</name>
       </hudson.plugins.git.BranchSpec>
     </branches>
     <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
@@ -35,7 +35,7 @@
           <pattern>{{gerrit_project_name}}</pattern>
           <branches>
             <com.sonyericsson.hudson.plugins.gerrit.trigger.hudsontrigger.data.Branch>
-              <compareType>PLAIN</compareType>
+              <compareType>ANT</compareType>
               <pattern>**</pattern>
             </com.sonyericsson.hudson.plugins.gerrit.trigger.hudsontrigger.data.Branch>
           </branches>
@@ -84,7 +84,7 @@
       <command>#create a temp branch and push it to official repo
 ssh-keyscan github.com >> $JENKINS_HOME/.ssh/known_hosts
 git remote add bot git@github.com:{{github_repo}}.git
-BRANCH_NAME="bot-"`date +%Y-%m-%d`-$BUILD_NUMBER 
+BRANCH_NAME="bot-"`date +%Y-%m-%d_%H:%M:%S`_$BUILD_NUMBER
 git checkout -b $BRANCH_NAME
 git push --set-upstream bot $BRANCH_NAME
 python $JENKINS_HOME/scripts/travisStatus.py -t ${{github_token_variable}} -r {{github_repo}} -b $BRANCH_NAME

@@ -8,7 +8,7 @@
         <gerritHostName>review.gerrithub.io</gerritHostName>
         <gerritSshPort>29418</gerritSshPort>
         <gerritProxy></gerritProxy>
-        <gerritUserName>pki-jenkins-bot</gerritUserName>
+        <gerritUserName>{{gerrit_user_name}}</gerritUserName>
         <gerritEMail></gerritEMail>
         <gerritAuthKeyFile>/var/lib/jenkins/.ssh/id_rsa</gerritAuthKeyFile>
         <gerritAuthKeyFilePassword>{AQAAABAAAAAQ2I1tK80WqhguNTJJdRrs7x4SONZIMtFNEBOuiynbaBI=}</gerritAuthKeyFilePassword>
