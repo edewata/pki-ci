@@ -84,7 +84,7 @@
       <command>#create a temp branch and push it to official repo
 ssh-keyscan github.com >> $JENKINS_HOME/.ssh/known_hosts
 git remote add bot git@github.com:{{github_repo}}.git
-BRANCH_NAME="bot-"`date +%Y-%m-%d_%H:%M:%S`_$BUILD_NUMBER
+BRANCH_NAME="bot-"`date +%Y%m%dT%H%M%SZ`_$BUILD_NUMBER
 git checkout -b $BRANCH_NAME
 git push --set-upstream bot $BRANCH_NAME
 python $JENKINS_HOME/scripts/travisStatus.py -t ${{github_token_variable}} -r {{github_repo}} -b $BRANCH_NAME
@@ -105,7 +105,7 @@ python $JENKINS_HOME/scripts/travisStatus.py -t ${{github_token_variable}} -r {{
           </logTexts>
           <EscalateStatus>false</EscalateStatus>
           <RunIfJobSuccessful>false</RunIfJobSuccessful>
-          <script>git push -d bot "bot-"`date +%Y-%m-%d`-$BUILD_NUMBER</script>
+          <script>git push -d bot "bot-"`date +%Y%m%dT%H%M%SZ`_$BUILD_NUMBER</script>
         </hudson.plugins.postbuildtask.TaskProperties>
       </tasks>
     </hudson.plugins.postbuildtask.PostbuildTask>
