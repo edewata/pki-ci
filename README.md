@@ -34,7 +34,7 @@ The significant default values taken are:
 - *jenkins_admin_username*: admin
 - *jenkins_admin_password*: admin
 - *gerrit_project_name*: dogtagpki/pki
-- *jenkins_plugins*: ["github","ws-cleanup","credentials","gerrit-trigger", "credentials-binding", "postbuild-task ", "plain-credentials"]
+- *jenkins_plugins*: ["github","ws-cleanup","credentials","gerrit-trigger", "credentials-binding", "plain-credentials", "postbuild-task", "envinject"]
 
 **Note:** It is recommended to change the default `admin` password by passing the `jenkins_admin_password` as environment variable (as shown in the script above).
 
