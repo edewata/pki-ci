@@ -20,14 +20,30 @@
 - name: Copy the Jenkins job xml
   template: src=buildJob.xml.j2 dest=/tmp/{{ jenkins_job_name }}.xml
 
+- name: Checking git credentials In Jenkins
+  become: true
+  shell: "java -jar {{jenkins_jar_location}} -s http://{{ jenkins_hostname }}:{{ jenkins_http_port }}/ get-credentials-as-xml \"SystemCredentialsProvider::SystemContextResolver::jenkins\" \"(global)\" \"{{ github_token_id }}\" --username {{jenkins_admin_username}} --password {{jenkins_admin_password}}"
+  register: git_creds
+  ignore_errors: yes
+  changed_when: "git_creds.stdout.find('{{github_token_id}}') == -1"
+
 - name: Copying credentials xml
   template: src=credentials.xml.j2 dest={{ github_credentials_loc }}.xml
+  when: "git_creds.stdout.find('{{github_token_id}}') == -1"
 
 - name: Adding credentials to jenkins for monitoring Travis
   shell: "cat {{ github_credentials_loc }}.xml | java -jar {{jenkins_jar_location}} -s http://{{ jenkins_hostname }}:{{ jenkins_http_port }}/ create-credentials-by-xml \"SystemCredentialsProvider::SystemContextResolver::jenkins\" \"(global)\" --username {{jenkins_admin_username}} --password {{jenkins_admin_password}}"
+  when: "git_creds.stdout.find('{{github_token_id}}') == -1"
+
+- name: Checking available jobs
+  become: true
+  shell: "java -jar {{jenkins_jar_location}} -s http://{{ jenkins_hostname }}:{{ jenkins_http_port }}/ list-jobs --username {{jenkins_admin_username}} --password {{jenkins_admin_password}}"
+  register: job_gerrit_travis
+  changed_when: "job_gerrit_travis.stdout.find('{{jenkins_job_name}}') == -1"
 
 - name: Creating Jenkins job
   shell: "java -jar {{ jenkins_jar_location }} -s http://{{ jenkins_hostname }}:{{ jenkins_http_port }}/ create-job {{ jenkins_job_name }} < /tmp/{{ jenkins_job_name }}.xml --username {{jenkins_admin_username}} --password {{jenkins_admin_password}}"
+  when: "job_gerrit_travis.stdout.find('{{jenkins_job_name}}') == -1"
 
 - name: Removing the credentials xml
   file:
