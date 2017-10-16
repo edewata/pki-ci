@@ -12,7 +12,7 @@ RUN echo 'deltarpm = false' >> /etc/dnf/dnf.conf \
 
 # Enable COPR for IPA-4-5
 RUN dnf copr enable -y @freeipa/freeipa-4-5 \
-    && dnf copr enable -y @pki/10.4 \
+    && dnf copr enable -y @pki/10.5 \
     && dnf builddep -y pki-base \
     && dnf install -y freeipa-server freeipa-server-dns freeipa-server-trust-ad python-ipatests --best --allowerasing
 
