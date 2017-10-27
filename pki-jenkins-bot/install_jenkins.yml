@@ -1,0 +1,15 @@
+---
+- hosts: localhost
+  become: yes
+  roles:
+    # Install java if not available
+    - geerlingguy.java
+
+    # Install and configure Jenkins
+    - installJenkins
+
+    # Create build job
+    - createBuildJob
+
+    # Configure Travis py
+    - configureTravisPy
