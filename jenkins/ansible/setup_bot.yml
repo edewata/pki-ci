@@ -1,5 +1,5 @@
 ---
-- hosts: localhost
+- hosts: pki-jenkins-fxx
   become: yes
   roles:
     # Install java if not available
@@ -8,8 +8,8 @@
     # Install and configure Jenkins
     - installJenkins
 
-    # Create build job
-    - createBuildJob
+    # Create pki-jenkins-bot build job
+    - createBotBuildJob
 
     # Configure Travis py
     - configureTravisPy
