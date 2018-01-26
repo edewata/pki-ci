@@ -21,12 +21,16 @@ To download the java setup playbook run the following ansible-galaxy command:
 
 The following command installs java (if not installed), configures the bot:
 
-    ansible-playbook install_jenkins.yml --extra-vars "jenkins_admin_password=<jenkins-password> github_token=<github-token>" -K -k
+    ansible-playbook setup_bot.yml --extra-vars "jenkins_admin_password=<jenkins-password> github_token=<github-token>" -K -k
     
     # -K will prompt for the system's root password
     # -k will prompt for SSH connection password
 
-**Note:** the `extra-vars` can be take values in the `key=value` format or as `JSON` format.
+**Note 1:** the `extra-vars` can be take values in the `key=value` format or as `JSON` format.
+
+**Note 2:** Ensure you run this script as a user (Don't install as `root`)
+
+**Note 3:** Replace 2nd line of`setup_bot.yml` from `pki-jenkins-fxx` to `localhost` if you are not using the inventory file
 
 ## Defaults taken
 The significant default values taken are:
