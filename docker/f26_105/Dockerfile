@@ -8,29 +8,20 @@ LABEL \
 # PYTHONCOERCECLOCALE warning
 ENV LC_ALL=C.UTF-8
 
-# updates
-RUN dnf -y update && dnf clean all
+# update all packages
+RUN dnf install -y dnf-plugins-core \
+    && dnf copr -y enable @pki/10.5 \
+    && dnf -y update
 
-# base dependencies, 389-DS
+# install base dependencies and DS
 RUN dnf install -y \
-        dnf-plugins-core \
         make \
-        python3-tox \
-        python3-pyldap \
         rpm-build \
         sudo \
-        389-ds-base \
-    && dnf clean all
+        389-ds-base
 
-# build dependencies
-RUN dnf builddep -y pki-core \
-    && dnf clean all
-
-# enable COPR with Dogtag 10.5 dependencies
-RUN dnf copr -y enable @pki/10.5 \
-    && dnf update -y \
-    && dnf install -y slf4j python2-cryptography python3-cryptography \
-    && dnf clean all
+# install PKI build dependencies
+RUN dnf builddep -y pki-core
 
 # build env
 ENV BUILDDIR="/tmp/workdir" \
@@ -42,8 +33,7 @@ EXPOSE 389 8080 8443
 
 # https://raw.githubusercontent.com/fedora-cloud/Fedora-Dockerfiles/master/systemd/systemd/Dockerfile
 ENV container docker
-RUN dnf -y install systemd && dnf clean all && \
-    (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done); \
+RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done); \
     rm -f /lib/systemd/system/multi-user.target.wants/*; \
     rm -f /etc/systemd/system/*.wants/*; \
     rm -f /lib/systemd/system/local-fs.target.wants/*; \
@@ -51,6 +41,9 @@ RUN dnf -y install systemd && dnf clean all && \
     rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
     rm -f /lib/systemd/system/basic.target.wants/*; \
     rm -f /lib/systemd/system/anaconda.target.wants/*;
+
+# cleanup
+RUN dnf clean all
 
 VOLUME [ "/sys/fs/cgroup", "/tmp", "/run" ]
 CMD ["/sbin/init"]
