@@ -1,5 +1,5 @@
 - name: Install Travispy
-  pip: "name=travispy state=present executable=pip-2.7"
+  pip: "name=travispy state=present executable=pip-3.6"
 
 - name: Create necessary folder
   file:

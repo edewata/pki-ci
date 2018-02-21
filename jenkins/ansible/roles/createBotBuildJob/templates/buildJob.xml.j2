@@ -88,7 +88,7 @@ ssh-keyscan github.com >> $JENKINS_HOME/.ssh/known_hosts
 git remote add bot git@github.com:{{github_repo}}.git
 git checkout -b $BRANCH_NAME
 git push --set-upstream bot $BRANCH_NAME
-python $JENKINS_HOME/scripts/travisStatus.py -t ${{github_token_variable}} -r {{github_repo}} -b $BRANCH_NAME
+python3 $JENKINS_HOME/scripts/travisStatus.py -t ${{github_token_variable}} -r {{github_repo}} -b $BRANCH_NAME
 </command>
       <unstableReturn>3</unstableReturn>
     </hudson.tasks.Shell>
