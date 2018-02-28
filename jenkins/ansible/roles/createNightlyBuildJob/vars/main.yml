@@ -1,0 +1,9 @@
+github_project_url: https://github.com/dogtagpki/pki.git
+
+pki_version: '10.6'
+
+# 00min 02Hrs Everyday
+time_to_trigger: "0 2 * * *"
+
+
+jenkins_job_name: '{{pki_version}}-Nightlies'

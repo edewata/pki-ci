@@ -1,0 +1,12 @@
+---
+- hosts: pki-jenkins-fxx
+  become: yes
+  roles:
+    # Install java if not available
+    - geerlingguy.java
+
+    # Install and configure Jenkins
+    - installJenkins
+
+    # Set up nightly build job
+    - createNightlyBuildJob

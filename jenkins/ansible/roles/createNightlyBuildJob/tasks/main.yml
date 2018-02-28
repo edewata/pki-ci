@@ -1,0 +1,42 @@
+- name: Include Fedora specific variables
+  include_vars: "{{ansible_distribution}}.yml"
+  when: ansible_distribution == 'Fedora'
+
+- name: Include EL specific variables
+  include_vars: "Redhat.yml"
+  when: ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS'
+
+- name: Install RPM Build tool
+  package:
+    name:
+      - rpm-build
+      - copr-cli
+    state: installed
+
+- name: Ensures {{jenkins_home}}/.config dir exists
+  file: path={{jenkins_home}}/.config state=directory
+
+- name: Ensure previous version of file is removed
+  file:
+    state: absent
+    path: "{{ jenkins_home }}/.config/copr"
+
+
+- name: Setting up credentials for pki-jenkins-bot to perform daily builds.
+  copy:
+    src: copr.j2
+    dest: "{{ jenkins_home }}/.config/copr"
+
+- name: Copy the Jenkins Nightlies job xml
+  template: src=buildJob.xml.j2 dest=/tmp/{{ jenkins_job_name }}.xml
+
+- name: Checking available jobs
+  become: true
+  shell: "java -jar {{jenkins_jar_location}} -s http://{{ jenkins_hostname }}:{{ jenkins_http_port }}/ list-jobs --username {{jenkins_admin_username}} --password {{jenkins_admin_password}}"
+  register: available_jobs
+  changed_when: "available_jobs.stdout.find(jenkins_job_name) == -1"
+
+- name: Creating Nightlies Jenkins job
+  shell: "java -jar {{ jenkins_jar_location }} -s http://{{ jenkins_hostname }}:{{ jenkins_http_port }}/ create-job {{ jenkins_job_name }} < /tmp/{{ jenkins_job_name }}.xml --username {{jenkins_admin_username}} --password {{jenkins_admin_password}}"
+  when: "available_jobs.stdout.find(jenkins_job_name) == -1"
+
