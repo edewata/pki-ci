@@ -7,7 +7,7 @@ github_credentials_loc: /tmp/credentials
 
 github_token_id: github_token
 github_token_variable: "{{github_token_id}}"
-github_repo: "pki-jenkins-bot/pki"
+github_repo: "dogtagpki/pki-verification-ci"
 
 jenkins_job_name: Gerrit-Travis-Integration-Job
 jenkins_create_job_dependencies:
