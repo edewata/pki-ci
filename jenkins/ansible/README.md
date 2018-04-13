@@ -39,7 +39,7 @@ To download the java setup playbook run the following ansible-galaxy command (**
 
 ## Setting up the Nightlies (Default setup for 10.6)
 
-    ansible-playbook setup_nightly.yml --extra-vars "jenkins_admin_password=<jenkins-password> github_token=<github-token>" -K -k --ask-vault-pass
+    ansible-playbook setup_nightly.yml --extra-vars "jenkins_admin_password=<jenkins-password>" -K -k --ask-vault-pass
     
     # -K will prompt for the system's root password
     # -k will prompt for SSH connection password
