@@ -1,6 +1,6 @@
-FROM registry.fedoraproject.org/fedora:28
+FROM registry.fedoraproject.org/fedora:27
 LABEL \
-    name="dogtagpki/pki-ci:f28_106_46" \
+    name="dogtagpki/pki-ci:f27_106_46" \
     maintainer="Dinesh Prasanth M K <dmoluguw@redhat.com>" \
     vendor="Dogtag PKI" \
     url="http://dogtagpki.org/"
@@ -47,8 +47,9 @@ RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == system
     rm -f /lib/systemd/system/basic.target.wants/*; \
     rm -f /lib/systemd/system/anaconda.target.wants/*;
 
-# Install FreeIPA-4.6
-RUN dnf config-manager --set-disabled updates-testing \
+# Enable COPR for IPA-4-6
+RUN dnf copr enable -y @freeipa/freeipa-4-6 \
+    && dnf config-manager --set-disabled updates-testing \
     && dnf install -y freeipa-server freeipa-server-dns freeipa-server-trust-ad python3-ipatests --best --allowerasing \
     && dnf clean all \
     && for i in /usr/lib/systemd/system/*-domainname.service; \
