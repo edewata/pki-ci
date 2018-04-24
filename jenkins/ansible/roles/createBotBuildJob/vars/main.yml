@@ -1,15 +1,10 @@
 gerrit_project_name: dogtagpki/pki
 gerrit_project_url: review.gerrithub.io:29418/{{gerrit_project_name}}
-
 gerrit_user_name: pki-jenkins-bot
 
-github_credentials_loc: /tmp/credentials
-
-github_token_id: github_token
-github_token_variable: "{{github_token_id}}"
 github_repo: "dogtagpki/pki-verification-ci"
 
-jenkins_job_name: Gerrit-Travis-Integration-Job
+jenkins_job_name: PKI-Verification-Bot
 jenkins_create_job_dependencies:
   - python-jenkins
   - lxml

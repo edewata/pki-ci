@@ -1,2 +1,5 @@
-[pki-jenkins-fxx]
+[pki-jenkins-staging]
+pki-jenkins-staging-fedora.usersys.redhat.com ansible_user=dmoluguw ansible_python_interpreter=/usr/bin/python3 ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+
+[pki-jenkins-production]
 pki-jenkins-fedora.usersys.redhat.com ansible_user=dmoluguw ansible_python_interpreter=/usr/bin/python3 ansible_ssh_common_args='-o StrictHostKeyChecking=no'

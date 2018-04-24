@@ -2,7 +2,7 @@
 
 ## Description
 There are 2 playbooks available for setting up different tasks after installing Jenkins.
-1. [Gerrit-Travis-Integration Job](#setting-up-the-bot) Configure a Jenkins job to link with gerrithub and travis. That is, `Gerrithub <-> Jenkins <-> Travis CI`
+1. [PKI-Verification-Bot](#setting-up-the-bot) Configure a Jenkins job to link with gerrithub and travis. That is, `Gerrithub <-> Jenkins <-> Travis CI`
 2. [XX.X-Nightlies](#setting-up-the-nightlies) Configure a Jenkins job to create a nightly build scheduled at 2AM everyday (default: 10.6 PKI)
 
 ## Requirements
@@ -23,7 +23,7 @@ To download the java setup playbook run the following ansible-galaxy command (**
 
 ## Setting up the bot
 
-    ansible-playbook setup_bot.yml --extra-vars "jenkins_admin_password=<jenkins-password> github_token=<github-token>" -K -k
+    ansible-playbook setup_bot.yml --extra-vars "jenkins_admin_password=<jenkins-password>" -K -k
     
     # -K will prompt for the system's root password
     # -k will prompt for SSH connection password
@@ -32,7 +32,7 @@ To download the java setup playbook run the following ansible-galaxy command (**
 ### Things to configure manually (ensures security)
 
 1. Generate SSH keypair and place it in `/var/lib/jenkins/.ssh/`. REMEMBER TO SET APPROPRIATE PERMISSIONS.
-2. Upload the public key to the `pki-jenkins-bot` gerrithub account and github account
+2. Upload the public key to the `pki-jenkins-bot` **gerrithub** account and **github** account
 3. Update the gerrit server in Jenkins to point to the public key from step #1
 4. Add a new credential (SSH Username with private key) from the job and ensure that this points to the public key created in step #1
 
@@ -61,7 +61,7 @@ The significant default values taken are:
 - *jenkins_admin_username*: admin
 - *jenkins_admin_password*: admin
 - *gerrit_project_name*: dogtagpki/pki
-- *jenkins_plugins*: ["github","ws-cleanup","credentials","gerrit-trigger", "credentials-binding", "plain-credentials", "postbuild-task", "envinject"]
+- *jenkins_plugins*: ["github","ws-cleanup","credentials","gerrit-trigger", "credentials-binding", "plain-credentials"]
 
 **Note:** It is recommended to change the default `admin` password by passing the `jenkins_admin_password` as environment variable (as shown in the script above).
 
