@@ -7,3 +7,6 @@ time_to_trigger: "0 2 * * *"
 
 
 jenkins_job_name: '{{pki_version}}-Nightlies'
+
+# Plugins needed for nightly job
+nightly_plugins: ["email-ext"]

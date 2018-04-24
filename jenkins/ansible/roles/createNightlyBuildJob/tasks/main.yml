@@ -1,17 +1,35 @@
-- name: Include Fedora specific variables
-  include_vars: "{{ansible_distribution}}.yml"
-  when: ansible_distribution == 'Fedora'
-
-- name: Include EL specific variables
-  include_vars: "Redhat.yml"
-  when: ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS'
-
 - name: Install RPM Build tool
   package:
     name:
       - rpm-build
       - copr-cli
     state: installed
+
+- name: Install Jenkins plugins using password.
+  jenkins_plugin:
+    name: "{{ item }}"
+    jenkins_home: "{{ jenkins_home }}"
+    params:
+      url_username: "{{ jenkins_admin_username }}"
+    url_password: "{{ jenkins_admin_password }}"
+    state: "{{ jenkins_plugins_state }}"
+    timeout: "{{ jenkins_plugin_timeout }}"
+    updates_expiration: "{{ jenkins_plugin_updates_expiration }}"
+    url: "http://{{ jenkins_hostname }}:{{ jenkins_http_port }}{{ jenkins_url_prefix }}"
+  with_items: "{{ nightly_plugins }}"
+  when: jenkins_admin_password != ""
+
+- name: Restart jenkins
+  service: name=jenkins state=restarted
+
+- name: Wait for Jenkins to start up before proceeding.
+  shell: "curl -D - --silent --max-time 5 http://{{ jenkins_hostname }}:{{ jenkins_http_port }}{{ jenkins_url_prefix }}/cli/"
+  register: result
+  until: (result.stdout.find("403 Forbidden") != -1) or (result.stdout.find("200 OK") != -1) and (result.stdout.find("Please wait while") == -1)
+  retries: "{{ jenkins_connection_retries }}"
+  delay: "{{ jenkins_connection_delay }}"
+  changed_when: false
+  check_mode: no
 
 - name: Ensures {{jenkins_home}}/.config dir exists
   file: path={{jenkins_home}}/.config state=directory
@@ -20,7 +38,6 @@
   file:
     state: absent
     path: "{{ jenkins_home }}/.config/copr"
-
 
 - name: Setting up credentials for pki-jenkins-bot to perform daily builds.
   copy:

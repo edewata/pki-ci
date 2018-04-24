@@ -1,5 +1,5 @@
 ---
-- hosts: pki-jenkins-fxx
+- hosts: pki-jenkins-staging
   become: yes
   roles:
     # Install java if not available

@@ -1,1 +1,0 @@
-chroots: '-r fedora-27-x86_64 -r fedora-28-x86_64 -r fedora-rawhide-x86_64'
