@@ -36,7 +36,11 @@
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
-      <command>script -c &quot;USE_TIMESTAMP=1 USE_GIT_COMMIT_ID=1 pki/scripts/compose_pki_core_packages srpm&quot; typescript.pki-core
+      <command># Clean old COPR builders
+$JENKINS_HOME/scripts/pki-copr.py
+
+# Build pki package
+pki/build.sh --with-timestamp --with-commit-id --work-dir=$(pwd)/packages srpm
 copr-cli build @pki/{{pki_version}}-nightly packages/SRPMS/*.src.rpm </command>
     </hudson.tasks.Shell>
   </builders>
