@@ -57,3 +57,22 @@
   shell: "java -jar {{ jenkins_jar_location }} -s http://{{ jenkins_hostname }}:{{ jenkins_http_port }}/ create-job {{ jenkins_job_name }} < /tmp/{{ jenkins_job_name }}.xml --username {{jenkins_admin_username}} --password {{jenkins_admin_password}}"
   when: "available_jobs.stdout.find(jenkins_job_name) == -1"
 
+- name: Ensure previous version of the script is removed
+  file:
+    state: absent
+    path: "{{ jenkins_home }}/scripts"
+
+- name: Ensures {{jenkins_home}}/scripts dir exists
+  file: path={{jenkins_home}}/scripts state=directory
+  
+- name: Copy scripts to clean old COPR builds
+  copy:
+    src: "{{item}}"
+    dest: "{{ jenkins_home }}/scripts"
+  with_items:
+    - pki-copr.py
+    - utils.py
+
+- name: Changing perm of "pki-copr.py", adding "+x"
+  file: dest=/{{ jenkins_home }}/scripts/pki-copr.py mode=a+x
+
